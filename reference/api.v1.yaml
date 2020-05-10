@@ -1,0 +1,118 @@
+openapi: 3.0.3
+info:
+  title: Demo API
+  version: '1.0'
+  description: Demo API
+  contact:
+    name: API Support
+    url: 'https://example.com/support'
+    email: support@example.com
+servers:
+  - url: 'http://localhost:8080'
+    description: Local server
+  - url: 'https://dev.example.com'
+    description: Development server
+paths:
+  /users:
+    get:
+      summary: Get all users.
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      operationId: getUsers
+      description: Returns an array of User model.
+    parameters: []
+    post:
+      summary: Create a new User.
+      operationId: createUser
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      description: Create a new User.
+      tags:
+        - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserForm'
+        required: true
+  '/users/{userId}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: Get user by ID.
+      tags:
+        - users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      operationId: getUserById
+      description: Returns a single User model.
+components:
+  schemas:
+    UserForm:
+      title: UserForm
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        lastName:
+          type: string
+          x-faker: name.lastName
+        firstName:
+          type: string
+          x-faker: name.firstName
+      required:
+        - firstName
+        - lastName
+        - email
+      description: UserForm model
+      x-examples: {}
+    User:
+      title: User
+      type: object
+      x-examples: {}
+      description: User model
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+          x-faker: name.firstName
+        lastName:
+          type: string
+          x-faker: name.lastName
+        email:
+          type: string
+          format: email
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+tags:
+  - name: users
+    description: Access to Users.
